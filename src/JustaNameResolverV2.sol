@@ -156,11 +156,11 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
         return SignatureVerifier.makeSignatureHash(target, expires, request, result);
     }
 
-    function supportsInterface(bytes4 interfaceID) external pure returns (bool) {
-        return interfaceID == type(IExtendedResolver).interfaceId || interfaceID == type(ISupportsInterface).interfaceId;
-    }
-
     function url() external view returns (string memory) {
         return s_url;
+    }
+
+    function supportsInterface(bytes4 interfaceID) external pure returns (bool) {
+        return interfaceID == type(IExtendedResolver).interfaceId || interfaceID == type(ISupportsInterface).interfaceId;
     }
 }
