@@ -5,7 +5,6 @@ import {JustaNameResolverV2} from "../src/JustaNameResolverV2.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 
-
 contract DeployJustaNameResolverV2 is Script {
     function run() external returns (address) {
         address proxy = deployJustaNameResolverV2();
@@ -23,7 +22,7 @@ contract DeployJustaNameResolverV2 is Script {
         ERC1967Proxy proxy = new ERC1967Proxy(address(resolverV2), "");
         JustaNameResolverV2(address(proxy)).initialize(config.baseUrl, signers, config.initialOwner);
         vm.stopBroadcast();
-        
+
         return address(proxy);
     }
 }

@@ -8,7 +8,7 @@ abstract contract CodeConstants {
 
     string constant LOCAL_BASE_URL = "https://resolver.justaname.id/v2";
     address constant LOCAL_INITIAL_OWNER = 0x0987654321098765432109876543210987654321;
-    address constant LOCAL_INITIAL_SIGNER = 0x1234567890123456789012345678901234567890;    
+    address constant LOCAL_INITIAL_SIGNER = 0x1234567890123456789012345678901234567890;
 }
 
 contract HelperConfig is CodeConstants, Script {
@@ -33,6 +33,10 @@ contract HelperConfig is CodeConstants, Script {
     }
 
     function getOrCreateAnvilEthConfig() public pure returns (NetworkConfig memory) {
-        return NetworkConfig({baseUrl: LOCAL_BASE_URL, initialOwner: LOCAL_INITIAL_OWNER, initialSigner: LOCAL_INITIAL_SIGNER});
+        return NetworkConfig({
+            baseUrl: LOCAL_BASE_URL,
+            initialOwner: LOCAL_INITIAL_OWNER,
+            initialSigner: LOCAL_INITIAL_SIGNER
+        });
     }
 }

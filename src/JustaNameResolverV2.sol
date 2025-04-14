@@ -5,7 +5,7 @@ import {OwnableUpgradeable} from "@openzeppelin-upgradeable/contracts/access/Own
 import {UUPSUpgradeable} from "@openzeppelin-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 import {Initializable} from "@openzeppelin-upgradeable/contracts/proxy/utils/Initializable.sol";
 
-import {SignatureVerifier} from "./SignatureVerifier.sol";
+import {SignatureVerifier} from "./libs/SignatureVerifier.sol";
 
 import {ISupportsInterface} from "./interfaces/ISupportsInterface.sol";
 import {IExtendedResolver} from "./interfaces/IExtendedResolver.sol";
@@ -68,7 +68,7 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
         assembly {
             let m := mload(0x40) // Cache the free memory pointer.
 
-            let arrOffset := calldataload(0x04) 
+            let arrOffset := calldataload(0x04)
 
             let firstElementPos := add(arrOffset, 0x04)
 
@@ -79,7 +79,7 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
 
                 mstore(0x00, signerAddress)
                 mstore(0x20, s_signers.slot)
-                
+
                 sstore(keccak256(0x00, 0x40), 1)
             }
 
@@ -89,7 +89,7 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
         emit NewSigners(signers);
     }
 
-     /**
+    /**
      * @dev Deprecates addresses from the list of authorized signers
      * @param signers Array of signer addresses to remove
      * @notice Only callable by the contract owner
@@ -101,7 +101,7 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
         assembly {
             let m := mload(0x40) // Cache the free memory pointer.
 
-            let arrOffset := calldataload(0x04) 
+            let arrOffset := calldataload(0x04)
 
             let firstElementPos := add(arrOffset, 0x04)
 
@@ -157,8 +157,7 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
     }
 
     function supportsInterface(bytes4 interfaceID) external pure returns (bool) {
-        return interfaceID == type(IExtendedResolver).interfaceId || 
-               interfaceID == type(ISupportsInterface).interfaceId;
+        return interfaceID == type(IExtendedResolver).interfaceId || interfaceID == type(ISupportsInterface).interfaceId;
     }
 
     function url() external view returns (string memory) {

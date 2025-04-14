@@ -12,6 +12,7 @@ library SignatureVerifier {
      * @param request: The original request that was sent.
      * @param result: The `result` field of the response (not including the signature part).
      */
+
     function makeSignatureHash(address target, uint64 expires, bytes memory request, bytes memory result)
         internal
         pure
