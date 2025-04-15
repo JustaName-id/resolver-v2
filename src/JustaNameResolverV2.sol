@@ -17,14 +17,16 @@ import {IResolverService} from "./interfaces/IResolverService.sol";
  */
 contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgradeable, UUPSUpgradeable {
     error OffchainLookup(address sender, string[] urls, bytes callData, bytes4 callbackFunction, bytes extraData);
-    error InvalidSignature();
+    error JustaNameResolverV2_InvalidSignature();
+    error JustaNameResolverV2_IndexOutOfBounds();
 
-    string private s_url;
-    mapping(address => bool) public s_signers;
+    string[] private s_urls;
+    mapping(address => bool) private s_signers;
 
     event NewSigners(address[] signers);
     event DeprecatedSigners(address[] signers);
-    event BaseUrlUpdated(string url);
+    event NewUrlAdded(string url);
+    event DeprecatedUrl(string url);
 
     constructor() {
         _disableInitializers();
@@ -32,15 +34,15 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
 
     /**
      * @dev Initializes the contract replacing the constructor
-     * @param url The base URL for the CCIP read gateway
+     * @param baseUrl The base URL for the CCIP read gateway
      * @param _signers Array of initial signer addresses
      * @param initialOwner Address that will be the owner of the contract
      */
-    function initialize(string calldata url, address[] calldata _signers, address initialOwner) external initializer {
+    function initialize(string calldata baseUrl, address[] calldata _signers, address initialOwner) external initializer {
         __Ownable_init(initialOwner);
         __UUPSUpgradeable_init();
 
-        s_url = url;
+        addUrl(baseUrl);
         addSigners(_signers);
     }
 
@@ -50,10 +52,18 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
      * @notice Only callable by the contract owner
      * @notice Emits a {BaseUrlUpdated} event
      */
-    function setBaseUrl(string calldata url) external onlyOwner {
-        s_url = url;
+    function addUrl(string calldata url) public onlyOwner {
+        s_urls.push(url);
 
-        emit BaseUrlUpdated(url);
+        emit NewUrlAdded(url);
+    }
+
+    function removeUrl(uint256 index) external onlyOwner {
+        require(index < s_urls.length, JustaNameResolverV2_IndexOutOfBounds());
+        s_urls[index] = s_urls[s_urls.length - 1];
+        s_urls.pop();
+
+        emit DeprecatedUrl(s_urls[index]);
     }
 
     /**
@@ -132,9 +142,7 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
      */
     function resolve(bytes calldata name, bytes calldata data) external view override returns (bytes memory) {
         bytes memory callData = abi.encodeWithSelector(IResolverService.resolve.selector, name, data);
-        string[] memory urls = new string[](1);
-        urls[0] = s_url;
-        revert OffchainLookup(address(this), urls, callData, JustaNameResolverV2.resolveWithProof.selector, callData);
+        revert OffchainLookup(address(this), s_urls, callData, JustaNameResolverV2.resolveWithProof.selector, callData);
     }
 
     /**
@@ -143,7 +151,7 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
      */
     function resolveWithProof(bytes calldata response, bytes calldata extraData) external view returns (bytes memory) {
         (address signer, bytes memory result) = SignatureVerifier.verify(extraData, response);
-        require(s_signers[signer], InvalidSignature());
+        require(s_signers[signer], JustaNameResolverV2_InvalidSignature());
         return result;
     }
 
@@ -156,8 +164,12 @@ contract JustaNameResolverV2 is Initializable, IExtendedResolver, OwnableUpgrade
         return SignatureVerifier.makeSignatureHash(target, expires, request, result);
     }
 
-    function url() external view returns (string memory) {
-        return s_url;
+    function getUrl(uint256 index) external view returns (string memory) {
+        return s_urls[index];
+    }
+
+    function isSigner(address signer) external view returns (bool) {
+        return s_signers[signer];
     }
 
     function supportsInterface(bytes4 interfaceID) external pure returns (bool) {

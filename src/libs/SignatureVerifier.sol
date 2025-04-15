@@ -2,10 +2,10 @@
 
 pragma solidity ^0.8.4;
 
-import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import {ECDSA} from "@solady/utils/ECDSA.sol";
 
 library SignatureVerifier {
-    error SignatureExpired();
+    error SignatureVerifier_SignatureExpired();
     /**
      * @dev Generates a hash for signing/verifying.
      * @param target: The address the signature is for.
@@ -32,7 +32,7 @@ library SignatureVerifier {
     function verify(bytes calldata request, bytes calldata response) internal view returns (address, bytes memory) {
         (bytes memory result, uint64 expires, bytes memory sig) = abi.decode(response, (bytes, uint64, bytes));
         address signer = ECDSA.recover(makeSignatureHash(address(this), expires, request, result), sig);
-        require(expires >= block.timestamp, SignatureExpired());
+        require(expires >= block.timestamp, SignatureVerifier_SignatureExpired());
         return (signer, result);
     }
 }
