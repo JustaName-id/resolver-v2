@@ -47,10 +47,11 @@ contract JustaNameResolverStorage is Initializable, OwnableUpgradeable, UUPSUpgr
      */
     function deprecateUrl(uint256 index) external onlyOwner {
         require(index < s_urls.length, JustaNameResolverV2_IndexOutOfBounds());
+        string memory deprecatedUrl = s_urls[index];
         s_urls[index] = s_urls[s_urls.length - 1];
         s_urls.pop();
 
-        emit DeprecatedUrl(s_urls[index]);
+        emit DeprecatedUrl(deprecatedUrl);
     }
 
     /**
