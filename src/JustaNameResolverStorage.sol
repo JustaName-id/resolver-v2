@@ -141,6 +141,7 @@ contract JustaNameResolverStorage is Initializable, OwnableUpgradeable, UUPSUpgr
         return s_urls[index];
     }
 
+    // TODO: This is returning true for address zero and 0x0000000000000000000000000000000000000001
     function isSigner(address signer) public view returns (bool) {
         return s_signers[signer];
     }
