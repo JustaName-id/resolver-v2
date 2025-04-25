@@ -26,7 +26,7 @@ contract TestJustaNameResolverStorage is Test, CodeConstants {
         assertEq(resolverV2.getUrls().length, 1);
         assertEq(resolverV2.getUrls()[0], LOCAL_BASE_URL);
 
-        // assertEq(resolverV2.isSigner(LOCAL_INITIAL_SIGNER), true);
+        assertEq(resolverV2.isSigner(LOCAL_INITIAL_SIGNER), true);
 
         assertEq(resolverV2.owner(), LOCAL_INITIAL_OWNER);
     }
@@ -101,8 +101,4 @@ contract TestJustaNameResolverStorage is Test, CodeConstants {
     /*//////////////////////////////////////////////////////////////
                                  SIGNERS
     //////////////////////////////////////////////////////////////*/
-
-    // function test() public {
-    //     assertEq(resolverV2.isSigner(address(0)), false);
-    // }
 }
