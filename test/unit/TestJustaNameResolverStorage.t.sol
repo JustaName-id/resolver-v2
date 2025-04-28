@@ -60,6 +60,8 @@ contract TestJustaNameResolverStorage is Test, CodeConstants {
     }
 
     function test_ShouldNotAddUrlIfNotOwner(address notOwner) public {
+        vm.assume(notOwner != LOCAL_INITIAL_OWNER);
+        
         vm.prank(notOwner);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, notOwner));
         resolverV2.addUrl(NEW_URL);
