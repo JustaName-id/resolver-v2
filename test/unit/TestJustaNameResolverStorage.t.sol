@@ -18,7 +18,7 @@ contract TestJustaNameResolverStorage is Test, CodeConstants {
         deployer = new DeployJustaNameResolverV2();
         resolverV2 = JustaNameResolverV2(deployer.deployJustaNameResolverV2());
     }
-    
+
     /*//////////////////////////////////////////////////////////////
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/
@@ -63,7 +63,7 @@ contract TestJustaNameResolverStorage is Test, CodeConstants {
         vm.prank(notOwner);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, notOwner));
         resolverV2.addUrl(NEW_URL);
-    }  
+    }
 
     function test_ShouldDeprecateUrlCorrectly(uint256 index) public {
         string[] memory oldUrls = resolverV2.getUrls();
