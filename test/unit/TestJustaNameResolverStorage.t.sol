@@ -22,7 +22,7 @@ contract TestJustaNameResolverStorage is Test, CodeConstants {
     /*//////////////////////////////////////////////////////////////
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/
-    function test_ShouldInitializeCorrectly() public {
+    function test_ShouldInitializeCorrectly() public view {
         assertEq(resolverV2.getUrls().length, 1);
         assertEq(resolverV2.getUrls()[0], LOCAL_BASE_URL);
 
@@ -34,13 +34,13 @@ contract TestJustaNameResolverStorage is Test, CodeConstants {
     /*//////////////////////////////////////////////////////////////
                                  URL
     //////////////////////////////////////////////////////////////*/
-    function test_ShouldGetUrlsCorrectly() public {
+    function test_ShouldGetUrlsCorrectly() public view {
         string[] memory urls = resolverV2.getUrls();
         assertEq(urls.length, 1);
         assertEq(urls[0], LOCAL_BASE_URL);
     }
 
-    function test_ShouldGetUrlCorrectly() public {
+    function test_ShouldGetUrlCorrectly() public view {
         string memory url = resolverV2.getUrl(0);
         assertEq(url, LOCAL_BASE_URL);
     }
