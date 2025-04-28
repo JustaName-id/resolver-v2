@@ -47,10 +47,11 @@ contract JustaNameResolverStorage is Initializable, OwnableUpgradeable, UUPSUpgr
      */
     function deprecateUrl(uint256 index) external onlyOwner {
         require(index < s_urls.length, JustaNameResolverV2_IndexOutOfBounds());
+        string memory deprecatedUrl = s_urls[index];
         s_urls[index] = s_urls[s_urls.length - 1];
         s_urls.pop();
 
-        emit DeprecatedUrl(s_urls[index]);
+        emit DeprecatedUrl(deprecatedUrl);
     }
 
     /**
@@ -140,6 +141,7 @@ contract JustaNameResolverStorage is Initializable, OwnableUpgradeable, UUPSUpgr
         return s_urls[index];
     }
 
+    // TODO: This is returning true for address zero and 0x0000000000000000000000000000000000000001
     function isSigner(address signer) public view returns (bool) {
         return s_signers[signer];
     }
